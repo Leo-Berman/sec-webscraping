@@ -23,7 +23,8 @@ def open_link(input_URL):
     }
     base = requests.get(input_URL,headers)
     soup = bs(base.content, "html.parser")
-    print(soup.prettify())
+    result = soup.find("title")
+    print(result.prettify())
     time.sleep(10)
     pass
 def main():
