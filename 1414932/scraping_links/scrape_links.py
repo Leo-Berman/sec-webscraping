@@ -7,37 +7,116 @@ import requests_random_user_agent
 import re
 import numpy as np
 def parse_filings():
+
+    # get the absolute path of the filings_links.tsv
+    #
     filings_path = os.path.abspath("filings_links.tsv")
+
+    # read that file into a dataframe
+    #
     df = pd.read_csv(filings_path, sep='\t',header = 0)
+
+    # get rid of excess information from columns
+    #
     df = df.drop(["Form type","Form description","Filing date"],axis = "columns")
     
-    '''
-    Iterate through all links temporarily disabled
-    for i in df.index:
-        open_link(df['Filings URL'][i])
-        time.sleep(10)
-    '''
-    open_link(df['Filings URL'][0])
+    
+    # Iterate through all links and find the 10-Qs and 10-Ks
+    #
+    # for i in df.index:
+    #     find_10_Qs_and_Ks(df['Filings URL'][i]),df['Reporting date'][i]
+    find_10_Qs_and_Ks(df['Filings URL'][0])
 
-def open_link(input_URL):
+def find_10_Qs_and_Ks(input_URL):
+
+    # read the html of the website
+    #
     base = requests.get(input_URL)
+    
+    # convert to BeautifulSoup
+    #
     soup = bs(base.content, "html.parser")
+
+    # find the the table with the 10-Qs and 10-Ks
+    #
     result = soup.find("table",attrs={"class":"tableFile"})
+
+    # Header for holding header and rows for holding
+    # the information of the table
+    #
     header = []
     rows = []
+
+    # iterate through all the rows
+    #
     for i, row in enumerate(result.find_all('tr')):
+
+        # if it is the first for, iterate through the row and 
+        # set the header to a list of the header types in html
+        #
         if i == 0:
             header = [el.text.strip() for el in row.find_all('th')]
+
+        # otherwise treat it like a normal row
+        #
         else:
-            # rows.append([el.text.strip() 
-            for el in row.find_all('td')]):
-                el.find('a')
-                pass
+
+            # create a list to hold the row
+            #
+            applist = []
+
+            # for each element in the row
+            #
+            for el in row.find_all('td'):
+
+                # if there is a link get the link 
+                #
+                a = el.find('a')
+                if a != None:
+                    applist.append("https://www.sec.gov/xviewer" + a.get("href"))
+
+                # otherwise append the plain text
+                #
+                else:
+                    applist.append((el.text.strip()))
+
+            # appen the list holding the row to the list of 
+            # rows
+            #
+            rows.append(applist.copy())
+
+    # convert to a dataframe
+    #
     df = pd.DataFrame(rows,columns = header)
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.precision', 3,):
-        print(df)
-    time.sleep(10)
-    pass
+
+    # search by the description and index the link
+    #
+    resultQ = df[df["Description"]=="10-Q"]["Document"]
+    resultK = df[df["Description"]=="10-K"]["Document"]
+
+    # check to see if there is a link for each 10-Q or 10-K
+    # and if so try and parse the information
+    #
+    links = []
+    try:
+        parse_SOI_tables(resultQ[0])
+    except:
+        pass
+    try:
+        parse_SOI_tables(resultK[0])
+    except:
+        pass
+    return links
+
+def parse_SOI_tables(input_URL: str):
+    base = requests.get(input_URL)
+    soup = bs(base.content, "html.parser")
+    SOI_table = soup.find_all("div")
+    
+    for x in SOI_table:
+        y = x.find_all("span")
+        for z in y:
+            print(z.prettify())
 def main():
     parse_filings()
     pass
