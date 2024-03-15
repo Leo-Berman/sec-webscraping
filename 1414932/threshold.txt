@@ -1,0 +1,13 @@
+  Seq                    Description                      Document     Type  \
+0   1                           10-Q     ocsl-20231231.htm   iXBRL     10-Q   
+1   2                        EX-31.1  ocsl-ex311_12312023x10xq.htm  EX-31.1   
+2   3                        EX-31.2  ocsl-ex312_12312023x10xq.htm  EX-31.2   
+3   4                        EX-32.1  ocsl-ex321_12312023x10xq.htm  EX-32.1   
+4   5                        EX-32.2  ocsl-ex322_12312023x10xq.htm  EX-32.2           
+
+       Size  
+0   8296970  
+1      8113  
+2      8414  
+3      4638  
+4      4649  
