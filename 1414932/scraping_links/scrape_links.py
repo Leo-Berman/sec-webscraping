@@ -6,6 +6,8 @@ import time
 import requests_random_user_agent
 import re
 import numpy as np
+import time
+from selenium import webdriver
 def parse_filings():
 
     # get the absolute path of the filings_links.tsv
@@ -25,9 +27,9 @@ def parse_filings():
     #
     # for i in df.index:
     #     find_10_Qs_and_Ks(df['Filings URL'][i]),df['Reporting date'][i]
-    find_10_Qs_and_Ks(df['Filings URL'][0])
+    find_10_Qs_and_Ks(df['Filings URL'][0],df['Reporting date'][0])
 
-def find_10_Qs_and_Ks(input_URL):
+def find_10_Qs_and_Ks(input_URL,date):
 
     # read the html of the website
     #
@@ -73,8 +75,7 @@ def find_10_Qs_and_Ks(input_URL):
                 #
                 a = el.find('a')
                 if a != None:
-                    applist.append("https://www.sec.gov/xviewer" + a.get("href"))
-
+                    applist.append("https://www.sec.gov/ixviewer/ix.html?" + a.get("href")[4:])
                 # otherwise append the plain text
                 #
                 else:
@@ -97,26 +98,25 @@ def find_10_Qs_and_Ks(input_URL):
     # check to see if there is a link for each 10-Q or 10-K
     # and if so try and parse the information
     #
-    links = []
     try:
-        parse_SOI_tables(resultQ[0])
+        parse_SOI_tables(resultQ[0],date)
     except:
         pass
     try:
-        parse_SOI_tables(resultK[0])
+        parse_SOI_tables(resultK[0],date)
     except:
         pass
-    return links
 
-def parse_SOI_tables(input_URL: str):
-    base = requests.get(input_URL)
-    soup = bs(base.content, "html.parser")
-    SOI_table = soup.find_all("div")
-    
-    for x in SOI_table:
-        y = x.find_all("span")
-        for z in y:
-            print(z.prettify())
+def parse_SOI_tables(input_URL: str,date):
+    print(input_URL)
+    driver = webdriver.Chrome()
+    driver.get(input_URL)
+    time.sleep(10)
+    html = driver.page_source
+    soup = bs(html,features="html5lib")
+    tables = soup.find_all("span", string = re.compile("Consolidated Schedule of Investments"))
+    print(len(tables))
+    print(tables)
 def main():
     parse_filings()
     pass
