@@ -7,11 +7,31 @@ import requests_random_user_agent
 import re
 import numpy as np
 import time
+from pathlib import Path
 from selenium import webdriver
+def extract_table(table):
+    table_rows = table.find_all('tr')
+    # print(table_rows)
+    rows = []
+    headers = []
+    # print(table.prettify())
+    for i,x in enumerate(table_rows):
+        if i == 0:
+            pass
+        elif i == 1:
+            headers = [el.text.strip() for el in x.find_all('td')]
+        else:
+            rows.append([el.text.strip() for el in x.find_all('td')])
+        
+    df = pd.DataFrame(rows,columns = headers)
+    # print(len(rows))
+    print(df.to_string())
+
 def parse_filings():
 
     # get the absolute path of the filings_links.tsv
     #
+    os.chdir('1414932')
     filings_path = os.path.abspath("filings_links.tsv")
 
     # read that file into a dataframe
@@ -114,9 +134,11 @@ def parse_SOI_tables(input_URL: str,date):
     time.sleep(10)
     html = driver.page_source
     soup = bs(html,features="html5lib")
-    tables = soup.find_all("span", string = re.compile("Consolidated Schedule of Investments"))
-    print(len(tables))
-    print(tables)
+    Titles = soup.find("span", string = re.compile("Consolidated Schedule of Investments"))
+    Titles = Titles.findNext("span", string = re.compile("Consolidated Schedule of Investments"))
+    Titles = Titles.findNext("span", string = re.compile("Consolidated Schedule of Investments"))
+    table = Titles.findNext("table")
+    extract_table(table)
 def main():
     parse_filings()
     pass
