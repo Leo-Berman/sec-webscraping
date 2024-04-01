@@ -9,23 +9,66 @@ import numpy as np
 import time
 from pathlib import Path
 from selenium import webdriver
-def extract_table(table):
+def extract_table(table,first_table=False, header = None):
     table_rows = table.find_all('tr')
-    # print(table_rows)
+    header_length = 0
+    
+    if header != None:
+        header_length = len(header)
     rows = []
-    headers = []
-    # print(table.prettify())
-    for i,x in enumerate(table_rows):
-        if i == 0:
-            pass
-        elif i == 1:
-            headers = [el.text.strip() for el in x.find_all('td')]
+
+    for x in table_rows:
+        # print(x)
+        app_row = [el.text.strip() for el in x.find_all('td')]
+        # print(app_row)
+        if 'Portfolio Company' in app_row and header == None:
+            header = app_row.copy()
+            header_length = len(header)
         else:
-            rows.append([el.text.strip() for el in x.find_all('td')])
-        
-    df = pd.DataFrame(rows,columns = headers)
-    # print(len(rows))
-    print(df.to_string())
+            deletions = []
+            for j in range(8,len(app_row)):
+                app_row[j]=app_row[j].replace(',','')
+                if "(" in app_row[j]:
+                    # print("() = ", app_row[j])
+                    pass
+                elif app_row[j].isnumeric():
+                    # print("## = ",app_row[j])
+                    pass
+                elif len(app_row) > header_length:
+                #     print("---")
+                #     print(app_row)
+                    # app_row.pop(j)
+                #     print(app_row)
+                #     print("---")
+                    # app_row[len(app_row)-1]+=note
+                    deletions.append(j)
+                    pass
+
+            note_addition = ""
+            while len(deletions) > 0 or len(app_row) > 13:
+                deletion_index = deletions.pop(len(deletions)-1)
+                print(deletion_index)
+                note_addition+=app_row.pop(deletion_index)
+                # note_addition += app_row.pop(deletions.pop(0)-k)
+                # app_row[len(app_row)]+=note_addition
+                
+            print("note addition ",note_addition)
+            app_row[len(app_row)-1]+=note_addition
+            if header_length > len(app_row):
+                for i in range(len(header)-len(app_row)):
+                    app_row.insert(len(app_row)-2,"")
+                    print(app_row)
+                pass
+            # for i in range(len(header)-len(app_row)):
+            #     app_row.insert(len(app_row)-2,"")
+            #     print(app_row)
+            if header_length != 0:
+                rows.append(app_row.copy())
+        # else:
+        #     rows.append(app_row).copy()
+    df = pd.DataFrame(rows,columns=header)
+
+    return df,header
 
 def parse_filings():
 
@@ -45,9 +88,9 @@ def parse_filings():
     
     # Iterate through all links and find the 10-Qs and 10-Ks
     #
-    # for i in df.index:
-    #     find_10_Qs_and_Ks(df['Filings URL'][i]),df['Reporting date'][i]
-    find_10_Qs_and_Ks(df['Filings URL'][0],df['Reporting date'][0])
+    for i in df.index:
+        find_10_Qs_and_Ks(df['Filings URL'][i],df['Reporting date'][i])
+    # find_10_Qs_and_Ks(df['Filings URL'][0],df['Reporting date'][0])
 
 def find_10_Qs_and_Ks(input_URL,date):
 
@@ -114,31 +157,64 @@ def find_10_Qs_and_Ks(input_URL,date):
     #
     resultQ = df[df["Description"]=="10-Q"]["Document"]
     resultK = df[df["Description"]=="10-K"]["Document"]
-
+    try:
+        resultQ[0] = resultQ[0].replace('hives','doc=/Archives')
+        resultK[0] = resultK[0].replace('hives','doc=/Archives')
+    except:
+        pass
     # check to see if there is a link for each 10-Q or 10-K
     # and if so try and parse the information
     #
     try:
-        parse_SOI_tables(resultQ[0],date)
+        parse_SOI_tables(resultQ[0],date,"Q")
     except:
         pass
     try:
-        parse_SOI_tables(resultK[0],date)
+        parse_SOI_tables(resultK[0],date,"K")
     except:
         pass
 
-def parse_SOI_tables(input_URL: str,date):
+def parse_SOI_tables(input_URL: str,date:str,formtype:str):
     print(input_URL)
     driver = webdriver.Chrome()
     driver.get(input_URL)
     time.sleep(10)
     html = driver.page_source
     soup = bs(html,features="html5lib")
+    
+    First_Soi = soup.find("span", string = re.compile("Consolidated Schedule of Investments")).parent.parent.parent
+    Curr_Soi_Index = First_Soi.find_all('a')
+    for x in Curr_Soi_Index:
+        if x.encode_contents().isdigit():
+            Curr_Soi_Pgnum = int(x.encode_contents())
+
+    Second_Soi = soup.find("span", string = re.compile("Consolidated Schedule of Investments")).findNext("span", string = re.compile("Consolidated Schedule of Investments")).parent.parent.parent
+    Prev_Soi_Index = Second_Soi.find_all('a')
+    for x in Prev_Soi_Index:
+        if x.encode_contents().isdigit():
+            Prev_Soi_Pgnum = int(x.encode_contents())
+    
+    iterations = Prev_Soi_Pgnum - Curr_Soi_Pgnum
+    
+    # Navigates to first part of table
     Titles = soup.find("span", string = re.compile("Consolidated Schedule of Investments"))
     Titles = Titles.findNext("span", string = re.compile("Consolidated Schedule of Investments"))
     Titles = Titles.findNext("span", string = re.compile("Consolidated Schedule of Investments"))
     table = Titles.findNext("table")
-    extract_table(table)
+    df_list = []
+    df,data_header = extract_table(table,first_table=True,header = None)
+    print(df)
+    df_list.append(df)
+    
+    for x in range(iterations-2):
+        table = table.findNext("span", string = re.compile("Consolidated Schedule of Investments"))
+        table = table.findNext("table")
+        df,unused = extract_table(table,first_table=False,header = data_header)
+        df_list.append(df)
+    df = pd.concat(df_list,ignore_index=False, axis=0)
+    print(df)
+    df.to_excel("DATATOROSEN/"+date+formtype+".xlsx",index=False)
+    print("past")
 def main():
     parse_filings()
     pass

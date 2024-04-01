@@ -1,0 +1,101 @@
+https://www.sec.gov/ixviewer/ix.html?doc=/Arcdoc=/Archives/edgar/data/1414932/000141493224000004/ocsl-20231231.htm
+                                    0   ...   38
+0                    Portfolio Company  ...  NaN
+1                  Control Investments  ...  NaN
+2          C5 Technology Holdings, LLC  ...  NaN
+3          C5 Technology Holdings, LLC  ...  NaN
+4      Continental Intermodal Group LP  ...  NaN
+..                                 ...  ...  ...
+323                                     ...  NaN
+324              Derivative Instrument  ...  NaN
+325  Foreign currency forward contract  ...  NaN
+326  Foreign currency forward contract  ...  NaN
+327                                     ...  NaN
+
+[328 rows x 39 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493223000018/ocsl-20230930.htm
+                                    0   ...   38
+0                    Portfolio Company  ...  NaN
+1                  Control Investments  ...  NaN
+2          C5 Technology Holdings, LLC  ...  NaN
+3          C5 Technology Holdings, LLC  ...  NaN
+4            Dominion Diagnostics, LLC  ...  NaN
+..                                 ...  ...  ...
+313                                     ...  NaN
+314              Derivative Instrument  ...  NaN
+315  Foreign currency forward contract  ...  NaN
+316  Foreign currency forward contract  ...  NaN
+317                                     ...  NaN
+
+[318 rows x 39 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Arcdoc=/Archives/edgar/data/1414932/000141493223000014/ocsl-20230630.htm
+                                    0   ...   38
+0                    Portfolio Company  ...  NaN
+1                  Control Investments  ...  NaN
+2          C5 Technology Holdings, LLC  ...  NaN
+3          C5 Technology Holdings, LLC  ...  NaN
+4            Dominion Diagnostics, LLC  ...  NaN
+..                                 ...  ...  ...
+343                                     ...  NaN
+344              Derivative Instrument  ...  NaN
+345  Foreign currency forward contract  ...  NaN
+346  Foreign currency forward contract  ...  NaN
+347                                     ...  NaN
+
+[348 rows x 39 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Arcdoc=/Archives/edgar/data/1414932/000141493223000009/ocsl-20230331.htm
+                                    0   ...   38
+0                    Portfolio Company  ...  NaN
+1                  Control Investments  ...  NaN
+2          C5 Technology Holdings, LLC  ...  NaN
+3          C5 Technology Holdings, LLC  ...  NaN
+4            Dominion Diagnostics, LLC  ...  NaN
+..                                 ...  ...  ...
+352                                     ...  NaN
+353              Derivative Instrument  ...  NaN
+354  Foreign currency forward contract  ...  NaN
+355  Foreign currency forward contract  ...  NaN
+356                                     ...  NaN
+
+[357 rows x 39 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Arcdoc=/Archives/edgar/data/1414932/000141493223000005/ocsl-20221231.htm
+                                                    0   ...    29
+0    Portfolio Company/Type of Investment (1)(2)(3)...  ...   NaN
+1                                  Control Investments  ...   NaN
+2                          C5 Technology Holdings, LLC  ...   NaN
+3                                     829 Common Units  ...   NaN
+4                        34,984,460.37 Preferred Units  ...   NaN
+..                                                 ...  ...   ...
+615      Cash and Cash Equivalents and Restricted Cash  ...  None
+616  JP Morgan Prime Money Market Fund, Institution...  ...  None
+617                                Other cash accounts  ...  None
+618  Total Cash and Cash Equivalents and Restricted...  ...  None
+619  Total Portfolio Investments and Cash and Cash ...  ...  None
+
+[620 rows x 30 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493222000016/ocsl-20220930.htm
+                                                    0   ...    29
+0    Portfolio Company/Type of Investment (1)(2)(3)...  ...   NaN
+1                                                       ...   NaN
+2                                                       ...   NaN
+3                                  Control Investments  ...   NaN
+4                          C5 Technology Holdings, LLC  ...   NaN
+..                                                 ...  ...   ...
+583      Cash and Cash Equivalents and Restricted Cash  ...  None
+584  JP Morgan Prime Money Market Fund, Institution...  ...  None
+585                                Other cash accounts  ...  None
+586  Total Cash and Cash Equivalents and Restricted...  ...  None
+587  Total Portfolio Investments and Cash and Cash ...  ...  None
+
+[588 rows x 30 columns]
+past
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493222000011/ocsl-06302022x10xq.htm
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493222000007/ocsl-03312022x10xq.htm
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493222000004/ocsl-12312021x10xq.htm
+https://www.sec.gov/ixviewer/ix.html?hives/edgar/data/1414932/000141493221000020/ocsl-09302021x10xk.htm
+https://www.sec.gov/ixviewer/ix.html?doc=/Archives/edgar/data/1414932/000141493221000015/ocsl-06302021x10xq.htm
