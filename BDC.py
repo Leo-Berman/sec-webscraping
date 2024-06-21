@@ -47,14 +47,16 @@ async def process_table(table):
                             row_elements[0] = text
                         else:
                             row_elements.append(text)
-                    else:
+                else:
                         row_elements[len(row_elements)-1]+=text
-                        rows.append(row_elements)
+        rows.append(row_elements)
 
     for i in range(len(rows)):
         if len(rows[i]) != len(rows[i]):
             print("Houston, we have a problem")
 
+    print(pd.DataFrame(rows))
+            
     return pd.DataFrame(rows),True
 
 async def main():
@@ -111,11 +113,11 @@ async def main():
     
     found = 0
             
-    target_frame_content_divs = target_frame_content_divs[found:]
+    targets = target_frame_content_divs[220::]
 
     df = pd.DataFrame()
     
-    for x in target_frame_content_divs:   
+    for x in targets:
         table = await x.querySelector('table > tbody')
         
         
@@ -130,14 +132,14 @@ async def main():
                 break
 
 
-            print(df)
+           
 
 
 
 
 
 
-    print(df)
+
 
     
     
@@ -154,6 +156,8 @@ async def main():
     await browser.close()
 
     
+    # write the dataframe to excel
+    df.to_excel("test.xlsx",index=False)
 
     
 if __name__ == "__main__":
