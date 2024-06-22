@@ -1,14 +1,23 @@
-import asyncio
-import pyppeteer as pt
-import unicodedata
-
+import asyncio 
+import calendar
+import getting_links as gl
 import browser_interactions as bi
 
+async def split_date(date):
+    date.split("-")
+    
+    return_date = []
+    
+    return_date.append(calendar.month_name[int(date[1])])
+    return_date.append(date[2])
+    return_date.append(date[0])
 
-async def main():
-    target_url = "https://www.sec.gov/ix?doc=/Archives/edgar/data/1414932/000141493224000008/ocsl-20240331.htm"
-    date = ["March","31","2024"]
+    return return_date
 
+async def do_filing(target_url,old_date,form,CIK):
+
+    date = await split_date(old_date)
+    
     page,browser = await bi.initialize_browser(target_url)
 
     df = await bi.make_table(page,date)
@@ -19,10 +28,19 @@ async def main():
 
     
     # write the dataframe to excel
-    df.to_excel("test.xlsx",index=False)
+    df.to_excel(CIK + "/" + CIK+ "_" +old_date + "_" +
+                form + ".xlsx",index=False)
     print("Excel Wrote")
 
 
+async def main():
+    CIK = '0001414932'
+    HEADER = {'User-Agent' : 'Okatree Lending BDC, Inc.'}
+    links,dates,forms = await gl.get_link_info(CIK,HEADER)
+
+    for link,date,form in zip(links,dates,forms):
+
+        await do_filing(link,date,form,CIK)
     
 
 if __name__ == "__main__":

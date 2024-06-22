@@ -50,13 +50,13 @@ async def make_table(page,date):
     
     try:
         frame = await find_frame(page)
-        breakpoint()
+
         target_frame_content = await frame.querySelector('html > body > div.reboot.main-container > #dynamic-xbrl-form')
-        breakpoint()
+
         divs = await target_frame_content.querySelectorAll('div');
-        breakpoint()
+
         targets = await narrow_divs(divs,date)
-        breakpoint()
+
         
         
     except:
