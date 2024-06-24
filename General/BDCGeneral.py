@@ -34,10 +34,14 @@ async def do_filing(target_url,old_date,form,CIK):
 
 
 async def main():
-    CIK = '0001414932'
-    HEADER = {'User-Agent' : 'Okatree Lending BDC, Inc.'}
+    #CIK = '0001414932'
+    CIK = '0001268752'
+    HEADER = {'User-Agent' : 'IITSAME'}
     links,dates,forms = await gl.get_link_info(CIK,HEADER)
-
+    
+    #CIK = '0001268752'
+    
+    #links,dates,forms = await gl.get_link_info("test.xlsx")
     for link,date,form in zip(links,dates,forms):
 
         await do_filing(link,date,form,CIK)
