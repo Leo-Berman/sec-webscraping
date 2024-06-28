@@ -35,7 +35,8 @@ async def do_filing(target_url,old_date,form,CIK):
 
 async def main():
     #CIK = '0001414932'
-    CIK = '0001268752'
+    #CIK = '0001268752'
+    CIK =  '0001513363'
     HEADER = {'User-Agent' : 'IITSAME'}
     links,dates,forms = await gl.get_link_info(CIK,HEADER)
     
