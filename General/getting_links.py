@@ -1,24 +1,17 @@
 import asyncio
 import Helper
 import pandas as pd
+import common_error as ce
 
 async def get_link_info(CIK,HEADER):
 
-    df = Helper.fetch_filing_data(cik = CIK, headers=HEADER)
-    print(df)
-    if df is not None:
-        return df['fileLink'].tolist(), df['reportDate'].tolist(),df['form'].tolist()
+    FILE = "getting_links.py"
+    FUNCTION = "get_link_info"
+    # Get the pandas datafram containing a companies 10 Ks and Qs metadata
+    try:
+        df = Helper.fetch_filing_data(cik = CIK, headers=HEADER)
+    except:
+        ce.custom_error(FILE,FUNCTION,"Filing links, dates, and formtype search failed")
 
+    return df['fileLink'].tolist(), df['reportDate'].tolist(),df['form'].tolist()
     
-async def get_link_info_OLD(excel_path):
-    df = pd.read_excel(excel_path,converters={'Reporting date':str})
-
-    print(df)
-    return_dates = []
-    dates = df['Reporting date'].tolist()
-    for x in dates:
-        if type(x) != float:
-            return_dates.append(x[:10])
-        
-    
-    return df['Filings URL'].tolist(),return_dates,df['Form type'].tolist()

@@ -7,6 +7,7 @@ import pdb
 import process_table as ptab
 
 async def initialize_browser(link):
+
     browser = await pt.launch({"headless" : False})
     page = await browser.newPage()
 

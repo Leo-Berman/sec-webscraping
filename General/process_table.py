@@ -5,11 +5,11 @@ import unicodedata
 import pandas as pd
 
 async def process_table(table):
-    #return None,False
+    FILE = "process_table.py"
+    FUNCTION = "process_table"
 
-    
+    # Find all table row elements and initialize an empty list for the dataframe
     table_rows = (await table.querySelectorAll('tr'))[1::]
-    print("past")
     
     rows = []
 
@@ -48,13 +48,11 @@ async def process_table(table):
                         else:
                             row_elements.append(text)
                 else:
-                        row_elements[len(row_elements)-1]+=text
+                    row_elements[len(row_elements)-1]+=text
         rows.append(row_elements)
 
     for i in range(len(rows)):
         if len(rows[i]) != len(rows[i]):
             print("Houston, we have a problem")
-
-    print(pd.DataFrame(rows))
             
     return pd.DataFrame(rows),True
