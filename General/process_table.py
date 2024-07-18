@@ -40,7 +40,7 @@ async def process_row(row):
 
             # if end of table return the dataframe and tell the program to stop
             if text.__contains__("Total Non-Control"):
-                return pd.DataFrame(rows),False
+                return row_elements,False
 
             # get the graphical size of the box
             boxsize = (await cell.boundingBox())
@@ -61,7 +61,7 @@ async def process_row(row):
                 # otherwise add it to the last cell
                 else:
                     row_elements[len(row_elements)-1]+=text
-    return row_elements
+    return row_elements,True
 
 async def check_row_lengths(rows):
     FILE = "process_table.py"
@@ -84,10 +84,13 @@ async def process_table(table):
     if proper_table == False:
         return pd.DataFrame(),True
 
+    continue_bool = True
+    
     # iterate through the rows and process them
     for row in table_rows:
-        row_elements = await process_row(row)
+        row_elements,continue_bool = await process_row(row)
         return_rows.append(row_elements)
-
+        if continue_bool == False:
+            break
     # return a dataframe of the rows
     return pd.DataFrame(return_rows),True

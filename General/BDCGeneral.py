@@ -2,6 +2,7 @@ import asyncio
 import calendar
 import getting_links as gl
 import browser_interactions as bi
+import pandas as pd
 
 # split the date into a list that has the actual name of the month
 async def split_date(date):
@@ -38,12 +39,19 @@ async def do_filing(target_url,old_date,form,CIK):
 async def main():
 
     # enter the ticker and the header
-    CIK =  '000' + '1383414'
+    CIK =  '000' + '1577791'
     HEADER = {'User-Agent' : 'ITSAME'}
 
     # get the filing metadta
     links,dates,forms = await gl.get_link_info(CIK,HEADER)
 
+    df = pd.DataFrame( {
+        'dates': dates,
+        'form types': forms,
+        'links': links
+        })
+    df.to_excel(CIK + "/" + CIK+ "_links.xlsx",index=False)
+    print("Links written")
     # iterate through each filing
     i = 0
     for link,date,form in zip(links,dates,forms):
