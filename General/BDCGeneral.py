@@ -49,6 +49,9 @@ async def main():
     # get the filing metadta
     links,dates,forms = await gl.get_link_info(CIK,HEADER)
 
+    if len(links) == len(dates) == len(forms) != 0:
+        print("Links successfully retrieved")
+    
     df = pd.DataFrame( {
         'dates': dates,
         'form types': forms,
