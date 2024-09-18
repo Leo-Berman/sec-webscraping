@@ -42,10 +42,7 @@ async def process_row(row):
 
             # if end of table return the dataframe and tell the program to stop
             if text.__contains__("Total Non-Control"):
-                print("text = ",text)
-                print("row = ",row_elements)
                 continue_bool = False
-                print("continue bool found")
 
             # get the graphical size of the box
             boxsize = (await cell.boundingBox())
@@ -89,6 +86,7 @@ async def process_table(table):
     if proper_table == False:
         return pd.DataFrame(),True
 
+    
     cont_bool = True
     
 
@@ -96,12 +94,9 @@ async def process_table(table):
     for row in table_rows:
         row_elements,continue_bool = await process_row(row)
         if (continue_bool == False):
-            print("table found continue bool")
-            cont_bool = False
-            
+            cont_bool = False    
         return_rows.append(row_elements)
 
-    print("finished the rows and continue_bool = ",cont_bool)
         
     # return a dataframe of the rows
     return pd.DataFrame(return_rows),cont_bool
