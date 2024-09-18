@@ -31,15 +31,19 @@ async def do_filing(target_url,old_date,form,CIK):
         return False
     # otherwise write the dataframe to excel
     else:
-        df.to_excel(CIK + "/" + CIK+ "_" +old_date + "_" +
-                    form + ".xlsx",index=False)
+        #df.to_excel(CIK + "/" + CIK+ "_" +old_date + "_" +
+                    #form + ".xlsx",index=False)
+        with pd.ExcelWriter(CIK + "/" + CIK + ".xlsx", mode = "a",
+                            engine="openpyxl",if_sheet_exists='replace') as writer:
+            df.to_excel(writer,sheet_name=old_date,index=False)
+
         return True
 
 
 async def main():
 
     # enter the ticker and the header
-    CIK =  '000' + '1577791'
+    CIK =  '000' + '1414932'
     HEADER = {'User-Agent' : 'ITSAME'}
 
     # get the filing metadta
@@ -52,7 +56,9 @@ async def main():
         })
     df.to_excel(CIK + "/" + CIK+ "_links.xlsx",index=False)
     print("Links written")
+
     # iterate through each filing
+    
     i = 0
     for link,date,form in zip(links,dates,forms):
 

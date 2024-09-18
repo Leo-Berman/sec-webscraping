@@ -25,6 +25,8 @@ async def check_proper_table(table_rows):
 # process a single row
 async def process_row(row):
 
+    continue_bool = True
+    
     # get all cells in a row and initialize a return list
     cells = await row.querySelectorAll('td')
     row_elements = [""]
@@ -40,7 +42,10 @@ async def process_row(row):
 
             # if end of table return the dataframe and tell the program to stop
             if text.__contains__("Total Non-Control"):
-                return row_elements,False
+                print("text = ",text)
+                print("row = ",row_elements)
+                continue_bool = False
+                print("continue bool found")
 
             # get the graphical size of the box
             boxsize = (await cell.boundingBox())
@@ -61,7 +66,7 @@ async def process_row(row):
                 # otherwise add it to the last cell
                 else:
                     row_elements[len(row_elements)-1]+=text
-    return row_elements,True
+    return row_elements,continue_bool
 
 async def check_row_lengths(rows):
     FILE = "process_table.py"
@@ -84,13 +89,19 @@ async def process_table(table):
     if proper_table == False:
         return pd.DataFrame(),True
 
-    continue_bool = True
+    cont_bool = True
     
+
     # iterate through the rows and process them
     for row in table_rows:
         row_elements,continue_bool = await process_row(row)
+        if (continue_bool == False):
+            print("table found continue bool")
+            cont_bool = False
+            
         return_rows.append(row_elements)
-        if continue_bool == False:
-            break
+
+    print("finished the rows and continue_bool = ",cont_bool)
+        
     # return a dataframe of the rows
-    return pd.DataFrame(return_rows),True
+    return pd.DataFrame(return_rows),cont_bool
