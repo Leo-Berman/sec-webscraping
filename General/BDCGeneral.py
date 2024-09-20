@@ -43,7 +43,7 @@ async def do_filing(target_url,old_date,form,CIK):
 async def main():
 
     # enter the ticker and the header
-    CIK =  '000' + '1414932'
+    CIK =  '000' + '1577791'
     HEADER = {'User-Agent' : 'ITSAME'}
 
     # get the filing metadta
