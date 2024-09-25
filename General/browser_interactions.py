@@ -54,7 +54,7 @@ async def narrow_divs(divs,date):
         content = await div.getProperty("textContent")
         text = await element_text(content)
 
-        if text.__contains__("Consolidated Schedule of Investments"):
+        if text.__contains__("SCHEDULE OF INVESTMENTS"):
 
             # get the 3 lines after "Consolidated Schedule of Investments
             # and check if the data is correct, then return the narrowed down divs
