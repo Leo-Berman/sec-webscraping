@@ -41,7 +41,7 @@ async def process_row(row):
             text = await bi.element_text(cell)
 
             # if end of table return the dataframe and tell the program to stop
-            if text.__contains__("Total Non-Control"):
+            if text.__contains__("Total Investents"):
                 continue_bool = False
 
             # get the graphical size of the box
