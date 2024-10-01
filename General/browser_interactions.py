@@ -125,7 +125,6 @@ async def make_table(page,date):
             
             df = pd.concat([df,return_rows])
             if continue_bool == False:
-                print("is this found?")
                 break
 
     return df

@@ -6,7 +6,6 @@ import pandas as pd
 import common_error as ce
 import browser_interactions as bi
 
-
 # check to make sure the table is actually the table we're looking for
 async def check_proper_table(table_rows):
 
@@ -41,7 +40,7 @@ async def process_row(row):
             text = await bi.element_text(cell)
 
             # if end of table return the dataframe and tell the program to stop
-            if text.__contains__("Total Investents"):
+            if text.__contains__("Total Investments"):
                 continue_bool = False
 
             # get the graphical size of the box
@@ -65,16 +64,15 @@ async def process_row(row):
                     row_elements[len(row_elements)-1]+=text
     return row_elements,continue_bool
 
+
 async def check_row_lengths(rows):
-    FILE = "process_table.py"
-    FUNCTION = "check_row_lengths"
     for i in range(len(rows)-1):
         if len(rows[i]) != len(rows[i+1]):
-            ce.custom_error(FILE, FUNCTION, "Row lengths are different")
+            ce.custom_error(__name__,
+                            check_row_lengths.__name__,
+                            "Row lengths are different")
             
 async def process_table(table):
-    FILE = "process_table.py"
-    FUNCTION = "process_table"
 
     # Find all table row elements and initialize an empty list
     table_rows = (await table.querySelectorAll('tr'))[1::]
@@ -86,17 +84,14 @@ async def process_table(table):
     if proper_table == False:
         return pd.DataFrame(),True
 
-    
     cont_bool = True
     
-
     # iterate through the rows and process them
     for row in table_rows:
         row_elements,continue_bool = await process_row(row)
         if (continue_bool == False):
             cont_bool = False    
         return_rows.append(row_elements)
-
         
     # return a dataframe of the rows
     return pd.DataFrame(return_rows),cont_bool

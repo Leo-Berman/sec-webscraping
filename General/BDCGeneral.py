@@ -3,6 +3,9 @@ import calendar
 import getting_links as gl
 import browser_interactions as bi
 import pandas as pd
+from common_error import custom_error
+
+global_file_name = "BDCGeneral.py"
 
 # split the date into a list that has the actual name of the month
 async def split_date(date):
@@ -26,42 +29,47 @@ async def do_filing(target_url,old_date,form,CIK):
     await browser.close()
 
     # if table wasn't found tell the user
-    if type(df) == type(None):
-        print("No table found")
+    if type(df) != pd.DataFrame:
+        print("Type Error, no table found")
         return False
+    elif df.empty:
+        print("Table empy, no table found")
+        return False
+    
     # otherwise write the dataframe to excel
     else:
-        #df.to_excel(CIK + "/" + CIK+ "_" +old_date + "_" +
-                    #form + ".xlsx",index=False)
-        with pd.ExcelWriter(CIK + "/" + CIK + ".xlsx", mode = "a",
-                            engine="openpyxl",if_sheet_exists='replace') as writer:
-            df.to_excel(writer,sheet_name=old_date,index=False)
+        with pd.ExcelWriter(CIK + "/" + CIK + ".xlsx",
+                            mode = "a", engine="openpyxl",
+                            if_sheet_exists='replace') as writer:
+            df.to_excel(writer, sheet_name=old_date, index=False)
 
         return True
-
 
 async def main():
 
     # enter the ticker and the header
-    CIK =  '000' + '1577791'
-    HEADER = {'User-Agent' : 'ITSAME'}
+    CIK =  '000' + '0878932'
+    HEADER = {'User-Agent' : 'BDC Researcher'}
 
     # get the filing metadta
     links,dates,forms = await gl.get_link_info(CIK,HEADER)
-
+    
     if len(links) == len(dates) == len(forms) != 0:
         print("Links successfully retrieved")
-    
+    else:
+        common_error(global_file_name,
+                     main.__name__,
+                     "Links weren't able to be retrieved")
+
+    # write those links to an excel sheet
     df = pd.DataFrame( {
         'dates': dates,
         'form types': forms,
         'links': links
         })
     df.to_excel(CIK + "/" + CIK+ "_links.xlsx",index=False)
-    print("Links written")
 
     # iterate through each filing
-    
     i = 0
     for link,date,form in zip(links,dates,forms):
 
@@ -70,8 +78,13 @@ async def main():
 
         # get the soi table
         complete_bool = await do_filing(link,date,form,CIK)
+
+        # notify the user if the filing was completed successfully
+        # or unsuccessfully
         i+=1
-        print("\n\n",i,"/",len(links),"Filing Completed",
+        print("\n\n", i,
+              "/",len(links),
+              "Filing Completed",
               "successfully" if complete_bool == True else "unsuccessfully")
 
 if __name__ == "__main__":
